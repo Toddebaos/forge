@@ -1,0 +1,36 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forge-postgres
+  namespace: todde
+spec:
+  instances: 2  # 1 primary + 1 replica — bra start, lägg till fler i Phase 2
+
+  postgresql:
+    parameters:
+      # Tuning för en liten server — justera efter RAM
+      shared_buffers: "256MB"
+      max_connections: "100"
+      work_mem: "4MB"
+
+  bootstrap:
+    initdb:
+      database: forge      # skapar forge-databasen automatiskt
+      owner: forge         # skapar forge-användaren automatiskt
+      secret:
+        name: forge-postgres-credentials  # vi skapar denna separat
+
+  storage:
+    size: 10Gi  # börja litet, utöka vid behov
+    # storageClass sätts när vi vet vad klustret har
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+  # Backup konfigureras i Phase 2 när vi har S3
+  # backup:
+  #   barmanObjectStore: ...

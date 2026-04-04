@@ -1,0 +1,32 @@
+global:
+  domain: argocd.toddeapp.hagman.dev  # byt till din domän
+
+configs:
+  params:
+    # Kör utan TLS internt — Cloudflare Tunnel terminerar TLS externt
+    server.insecure: true
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostname: argocd.toddeapp.hagman.dev  # byt till din domän
+    tls: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+notifications:
+  enabled: false  # aktivera i Phase 2

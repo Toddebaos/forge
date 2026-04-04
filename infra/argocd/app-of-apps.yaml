@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forge-root
+  namespace: argocd
+  # Tar bort sig själv sist om man deletar — undviker orphaned resources
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<ditt-username>/forge.git  # byt ut
+    targetRevision: main
+    path: infra/argocd/apps  # ArgoCD tittar i den här mappen
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true      # tar bort resurser som försvunnit från Git
+      selfHeal: true   # återställer manuella ändringar i klustret
+    syncOptions:
+      - CreateNamespace=true
