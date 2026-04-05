@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<ditt-username>/forge.git  # byt ut
+    repoURL: https://github.com/<Toddebaos>/forge.git  # byt ut
     targetRevision: main
     path: infra/argocd/apps  # ArgoCD tittar i den här mappen
   destination:

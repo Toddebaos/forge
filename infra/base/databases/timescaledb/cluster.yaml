@@ -1,0 +1,38 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forge-timescale
+  namespace: todde
+spec:
+  instances: 2  # 1 primary + 1 replica
+
+  # Använder TimescaleDB-imagen istället för standard PostgreSQL
+  # timescaledb-ha innehåller PostgreSQL + TimescaleDB + PostGIS
+  imageName: ghcr.io/cloudnative-pg/postgresql:16-timescaledb
+
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      max_connections: "100"
+      # Aktiverar TimescaleDB-extensionen
+      shared_preload_libraries: "timescaledb"
+
+  bootstrap:
+    initdb:
+      database: forge_metrics   # separat databas från huvud-postgres
+      owner: forge_metrics
+      secret:
+        name: forge-timescale-credentials
+      postInitSQL:
+        # Skapar extensionen automatiskt vid bootstrap
+        - CREATE EXTENSION IF NOT EXISTS timescaledb;
+
+  storage:
+    size: 20Gi  # time-series växer snabbt — börja generöst
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi

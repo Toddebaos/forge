@@ -1,5 +1,5 @@
 global:
-  domain: argocd.toddeapp.hagman.dev  # byt till din domän
+  domain: argocd.toddemanos.com  # byt till din domän
 
 configs:
   params:
@@ -10,7 +10,7 @@ server:
   ingress:
     enabled: true
     ingressClassName: nginx
-    hostname: argocd.toddeapp.hagman.dev  # byt till din domän
+    hostname: argocd.toddemanos.com  # byt till din domän
     tls: true
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
