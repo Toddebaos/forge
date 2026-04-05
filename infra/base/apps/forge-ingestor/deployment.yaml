@@ -16,7 +16,7 @@ spec:
       serviceAccountName: forge-ingestor
       containers:
         - name: forge-ingestor
-          image: ghcr.io/<ditt-github-username>/forge-ingestor:8690f3d79064fa8566b3ad8e425cf98793dbc5c2
+          image: ghcr.io/<ditt-github-username>/forge-ingestor:f6b55248d724f5c4aaca54ace2be7333d93429c3
           ports:
             - containerPort: 8080
           env:
