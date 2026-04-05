@@ -25,6 +25,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # Sätt execute-rättigheter direkt i pipelinen — permanent fix
+      - name: Gör mvnw körbar
+        run: chmod +x apps/forge-ingestor/mvnw
+
       - name: Kör tester
         working-directory: apps/forge-ingestor
         run: ./mvnw test
@@ -36,7 +40,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Konverterar användarnamnet till lowercase — GHCR kräver det
       - name: Sätt lowercase owner
         run: echo "OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
