@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forge-ingestor
+  namespace: todde
+spec:
+  replicas: 1       # alltid 1 — vi vill inte ha parallella ingestions
+  selector:
+    matchLabels:
+      app: forge-ingestor
+  template:
+    metadata:
+      labels:
+        app: forge-ingestor
+    spec:
+      serviceAccountName: forge-ingestor
+      containers:
+        - name: forge-ingestor
+          image: ghcr.io/<ditt-github-username>/forge-ingestor:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: forge-ingestor-secrets
+                  key: github-token
+            - name: GITHUB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: forge-ingestor-secrets
+                  key: github-username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forge-postgres-credentials
+                  key: password
+            - name: TIMESCALE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forge-timescale-credentials
+                  key: password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forge-redis-credentials
+                  key: password
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forge-elasticsearch-credentials
+                  key: password
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: forge-ingestor-secrets
+                  key: mongodb-uri
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          # Liveness — om denna failar startas containern om
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60   # JVM behöver tid att starta
+            periodSeconds: 30
+          # Readiness — om denna failar tas podden bort från Service
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10

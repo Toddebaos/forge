@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forge-ingestor
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<ditt-github-username>/forge.git
+    targetRevision: main
+    path: infra/base/apps/forge-ingestor
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todde
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
