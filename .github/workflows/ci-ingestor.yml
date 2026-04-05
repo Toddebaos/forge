@@ -6,6 +6,7 @@ on:
       - 'apps/forge-ingestor/**'
     branches:
       - main
+  workflow_dispatch:  # möjliggör manuell triggning från GitHub UI
 
 jobs:
   build-and-push:
@@ -25,7 +26,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Sätt execute-rättigheter direkt i pipelinen — permanent fix
       - name: Gör mvnw körbar
         run: chmod +x apps/forge-ingestor/mvnw
 
