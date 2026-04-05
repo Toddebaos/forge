@@ -5,7 +5,7 @@ metadata:
   namespace: todde
 data:
   config.yaml: |
-    tunnel: REPLACE_ME  # tunnel-ID från Cloudflare dashboard
+    tunnel: bc12cc01-ac86-41fd-8df2-2d12ff734ef6  # tunnel-ID från Cloudflare dashboard
     credentials-file: /etc/cloudflared/credentials/credentials.json
 
     ingress:
