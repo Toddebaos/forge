@@ -1,4 +1,4 @@
-package main.com.forge.api.model.postgres;
+package com.forge.api.model.postgres;
 
 import jakarta.persistence.*;
 import lombok.Data;
