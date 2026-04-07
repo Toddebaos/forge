@@ -35,6 +35,6 @@ spec:
             use-forwarded-headers: "true"
             compute-full-forwarded-for: "true"
             use-proxy-protocol: "false"
-    destination:
-      server: https://kubernetes.default.svc
-      namespace: todde
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todde
