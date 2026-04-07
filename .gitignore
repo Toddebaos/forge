@@ -1,0 +1,9 @@
+# Kubernetes secrets — appliceras manuellt med kubectl, aldrig via git
+infra/base/databases/postgresql/credentials.yaml
+infra/base/databases/redis/credentials.yaml
+infra/base/databases/mongodb/credentials.yaml
+infra/base/databases/elasticsearch/credentials.yaml
+infra/base/databases/timescaledb/credentials.yaml
+infra/base/networking/ingress/cloudflare-secret.yaml
+infra/base/apps/forge-ingestor/secret.yaml
+infra/base/apps/forge-api/secret.yaml
