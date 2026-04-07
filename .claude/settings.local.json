@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -l \"namespace: todde\" c:/Users/todde/forge/infra/argocd/apps/*.yaml c:/Users/todde/forge/infra/argocd/app-of-apps.yaml)",
+      "Bash(grep -A2 \"destination:\" c:/Users/todde/forge/infra/argocd/apps/*.yaml c:/Users/todde/forge/infra/argocd/app-of-apps.yaml)"
+    ]
+  }
+}
