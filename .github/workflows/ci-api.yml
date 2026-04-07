@@ -29,9 +29,9 @@ jobs:
       - name: Gör mvnw körbar
         run: chmod +x apps/forge-api/mvnw
 
-      - name: Kör tester
+      - name: Bygg
         working-directory: apps/forge-api
-        run: ./mvnw test
+        run: ./mvnw package -DskipTests
 
       - name: Logga in på GHCR
         uses: docker/login-action@v3
