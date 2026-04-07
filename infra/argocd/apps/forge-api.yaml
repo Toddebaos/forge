@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forge-api
+  namespace: todde
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Toddebaos/forge.git
+    targetRevision: main
+    path: infra/base/apps/forge-api
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todde
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
