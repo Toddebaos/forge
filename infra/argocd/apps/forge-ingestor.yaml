@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<ditt-github-username>/forge.git
+    repoURL: https://github.com/Toddebaos/forge.git
     targetRevision: main
     path: infra/base/apps/forge-ingestor
   destination:
