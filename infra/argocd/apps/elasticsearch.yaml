@@ -42,3 +42,6 @@ spec:
           existingSecret: forge-elasticsearch-credentials
           elasticPasswordSecret: forge-elasticsearch-credentials
           elasticPasswordSecretPasswordKey: password
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todde
