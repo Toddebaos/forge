@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: forge-root
-  namespace: argocd
+  namespace: todde
   # Tar bort sig själv sist om man deletar — undviker orphaned resources
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -14,7 +14,7 @@ spec:
     path: infra/argocd/apps  # ArgoCD tittar i den här mappen
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: todde
   syncPolicy:
     automated:
       prune: true      # tar bort resurser som försvunnit från Git

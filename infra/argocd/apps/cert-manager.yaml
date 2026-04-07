@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: cert-manager
-  namespace: argocd
+  namespace: todde
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -25,7 +25,7 @@ spec:
             memory: 128Mi
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
+    namespace: todde
   syncPolicy:
     automated:
       prune: true
