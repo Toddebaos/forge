@@ -8,47 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: redis
-    targetRevision: 19.6.4
-    helm:
-      valuesObject:
-        architecture: replication  # 1 primary + replicas, Sentinel hanterar failover
-
-        auth:
-          enabled: true
-          existingSecret: forge-redis-credentials
-          existingSecretPasswordKey: password
-
-        sentinel:
-          enabled: true          # Sentinel = automatisk failover om primary dör
-          masterSet: forge-redis # namn på sentinel-gruppen, används av klienter
-          quorum: 2              # antal sentinels som måste hålla med om failover
-
-        replica:
-          replicaCount: 2        # 1 primary + 2 replicas = 3 pods totalt
-
-        master:
-          persistence:
-            enabled: true
-            size: 2Gi
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              memory: 256Mi
-
-        replica:
-          persistence:
-            enabled: true
-            size: 2Gi
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              memory: 256Mi
+    repoURL: https://github.com/Toddebaos/forge.git
+    targetRevision: main
+    path: infra/base/databases/redis
   destination:
     server: https://kubernetes.default.svc
     namespace: todde
@@ -56,5 +18,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

@@ -8,40 +8,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: elasticsearch
-    targetRevision: 21.3.0
-    helm:
-      valuesObject:
-        # Phase 1: single-node för enkelhet
-        # Phase 2: dela upp i master/data/coordinating noder
-        master:
-          replicaCount: 1
-          persistence:
-            enabled: true
-            size: 10Gi
-          resources:
-            requests:
-              cpu: 250m
-              memory: 512Mi
-            limits:
-              memory: 1Gi
-          heapSize: 256m  # JVM heap — alltid ungefär halva minneslimiten
-
-        data:
-          replicaCount: 0  # master-noden hanterar data också i single-node setup
-
-        coordinating:
-          replicaCount: 0
-
-        ingest:
-          enabled: false
-
-        security:
-          enabled: true
-          existingSecret: forge-elasticsearch-credentials
-          elasticPasswordSecret: forge-elasticsearch-credentials
-          elasticPasswordSecretPasswordKey: password
+    repoURL: https://github.com/Toddebaos/forge.git
+    targetRevision: main
+    path: infra/base/databases/elasticsearch
   destination:
     server: https://kubernetes.default.svc
     namespace: todde
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -8,36 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: mongodb
-    targetRevision: 15.6.0
-    helm:
-      valuesObject:
-        architecture: replicaset  # 3 noder, en primary + två secondaries
-        replicaCount: 3
-
-        auth:
-          enabled: true
-          rootUser: root
-          existingSecret: forge-mongodb-credentials
-
-        replicaSetName: forge-rs   # namn på replica setet
-
-        persistence:
-          enabled: true
-          size: 10Gi
-
-        resources:
-          requests:
-            cpu: 200m
-            memory: 256Mi
-          limits:
-            memory: 512Mi
-
-        # Arbiter ersätter en fullständig tredje nod för quorum
-        # Vi kör utan arbiter — alla 3 noder har data
-        arbiter:
-          enabled: false
+    repoURL: https://github.com/Toddebaos/forge.git
+    targetRevision: main
+    path: infra/base/databases/mongodb
   destination:
     server: https://kubernetes.default.svc
     namespace: todde
@@ -45,5 +18,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
