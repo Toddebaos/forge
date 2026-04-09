@@ -25,6 +25,8 @@ spec:
               value: single-node
             - name: xpack.security.enabled
               value: "true"
+            - name: xpack.security.http.ssl.enabled
+              value: "false"
             - name: ELASTIC_PASSWORD
               valueFrom:
                 secretKeyRef:

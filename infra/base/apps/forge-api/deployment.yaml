@@ -40,11 +40,14 @@ spec:
                 secretKeyRef:
                   name: forge-api-secrets
                   key: mongodb-uri
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: none
           resources:
             requests:
               cpu: 100m
               memory: 256Mi
             limits:
+              cpu: 300m
               memory: 512Mi
           livenessProbe:
             httpGet:
