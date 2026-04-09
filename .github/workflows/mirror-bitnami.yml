@@ -1,0 +1,72 @@
+name: Mirror Bitnami images to GHCR
+
+on:
+  workflow_dispatch:  # kör manuellt från GitHub UI
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Logga in på GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Installera Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lägg till Bitnami repo
+        run: helm repo add bitnami https://charts.bitnami.com/bitnami && helm repo update
+
+      - name: Hämta image-taggar från charts
+        id: tags
+        run: |
+          MONGODB_TAG=$(helm show values bitnami/mongodb --version 15.6.0 | grep -A3 "^image:" | grep "tag:" | head -1 | awk '{print $2}')
+          REDIS_TAG=$(helm show values bitnami/redis --version 19.6.4 | grep -A3 "^image:" | grep "tag:" | head -1 | awk '{print $2}')
+          ES_TAG=$(helm show values bitnami/elasticsearch --version 21.3.0 | grep -A3 "^image:" | grep "tag:" | head -1 | awk '{print $2}')
+          echo "mongodb=$MONGODB_TAG" >> $GITHUB_OUTPUT
+          echo "redis=$REDIS_TAG" >> $GITHUB_OUTPUT
+          echo "elasticsearch=$ES_TAG" >> $GITHUB_OUTPUT
+          echo "MongoDB: $MONGODB_TAG, Redis: $REDIS_TAG, Elasticsearch: $ES_TAG"
+
+      - name: Spegla MongoDB
+        run: |
+          TAG=${{ steps.tags.outputs.mongodb }}
+          docker pull docker.io/bitnami/mongodb:$TAG
+          docker tag docker.io/bitnami/mongodb:$TAG ghcr.io/toddebaos/bitnami-mongodb:$TAG
+          docker tag docker.io/bitnami/mongodb:$TAG ghcr.io/toddebaos/bitnami-mongodb:latest
+          docker push ghcr.io/toddebaos/bitnami-mongodb:$TAG
+          docker push ghcr.io/toddebaos/bitnami-mongodb:latest
+          echo "MONGODB_TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Spegla Redis
+        run: |
+          TAG=${{ steps.tags.outputs.redis }}
+          docker pull docker.io/bitnami/redis:$TAG
+          docker tag docker.io/bitnami/redis:$TAG ghcr.io/toddebaos/bitnami-redis:$TAG
+          docker tag docker.io/bitnami/redis:$TAG ghcr.io/toddebaos/bitnami-redis:latest
+          docker push ghcr.io/toddebaos/bitnami-redis:$TAG
+          docker push ghcr.io/toddebaos/bitnami-redis:latest
+          echo "REDIS_TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Spegla Elasticsearch
+        run: |
+          TAG=${{ steps.tags.outputs.elasticsearch }}
+          docker pull docker.io/bitnami/elasticsearch:$TAG
+          docker tag docker.io/bitnami/elasticsearch:$TAG ghcr.io/toddebaos/bitnami-elasticsearch:$TAG
+          docker tag docker.io/bitnami/elasticsearch:$TAG ghcr.io/toddebaos/bitnami-elasticsearch:latest
+          docker push ghcr.io/toddebaos/bitnami-elasticsearch:$TAG
+          docker push ghcr.io/toddebaos/bitnami-elasticsearch:latest
+          echo "ES_TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Sammanfattning
+        run: |
+          echo "### Speglade images" >> $GITHUB_STEP_SUMMARY
+          echo "- ghcr.io/toddebaos/bitnami-mongodb:$MONGODB_TAG" >> $GITHUB_STEP_SUMMARY
+          echo "- ghcr.io/toddebaos/bitnami-redis:$REDIS_TAG" >> $GITHUB_STEP_SUMMARY
+          echo "- ghcr.io/toddebaos/bitnami-elasticsearch:$ES_TAG" >> $GITHUB_STEP_SUMMARY
