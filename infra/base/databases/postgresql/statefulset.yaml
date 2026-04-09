@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forge-postgres-init
+  namespace: todde
+data:
+  init.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+      CREATE DATABASE forge_metrics OWNER $POSTGRES_USER;
+      \c forge_metrics
+      CREATE EXTENSION IF NOT EXISTS timescaledb;
+    EOSQL
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: forge-postgres
+  namespace: todde
+spec:
+  serviceName: forge-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forge-postgres
+  template:
+    metadata:
+      labels:
+        app: forge-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: timescale/timescaledb:latest-pg16
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: forge
+            - name: POSTGRES_DB
+              value: forge
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forge-postgres-credentials
+                  key: password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: init
+          configMap:
+            name: forge-postgres-init
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 10Gi
+---
+# Service för PostgreSQL (forge-api + forge-ingestor postgres datasource)
+apiVersion: v1
+kind: Service
+metadata:
+  name: forge-postgres-rw
+  namespace: todde
+spec:
+  selector:
+    app: forge-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+# Service för TimescaleDB (forge-ingestor timescale datasource)
+apiVersion: v1
+kind: Service
+metadata:
+  name: forge-timescale-rw
+  namespace: todde
+spec:
+  selector:
+    app: forge-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432

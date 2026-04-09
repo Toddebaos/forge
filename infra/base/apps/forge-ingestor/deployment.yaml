@@ -39,8 +39,12 @@ spec:
             - name: TIMESCALE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: forge-timescale-credentials
+                  name: forge-postgres-credentials
                   key: password
+            - name: TIMESCALE_USER
+              value: forge
+            - name: TIMESCALE_URL
+              value: jdbc:postgresql://forge-timescale-rw.todde.svc.cluster.local:5432/forge_metrics
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
