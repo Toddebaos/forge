@@ -52,10 +52,10 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 512Mi
+              memory: 384Mi
             limits:
               cpu: 300m
-              memory: 1Gi
+              memory: 768Mi
       volumes:
         - name: init
           configMap:
