@@ -16,6 +16,7 @@
     <name>forge-ingestor</name>
 
     <properties>
+        <jackson.version>2.15.4</jackson.version>
         <java.version>21</java.version>
     </properties>
 
@@ -102,6 +103,12 @@
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
             <version>4.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.4</version>
         </dependency>
     </dependencies>
 

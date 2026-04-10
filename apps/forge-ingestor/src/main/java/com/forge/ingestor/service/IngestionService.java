@@ -28,11 +28,10 @@ public class IngestionService {
     private final GitHubRepoRepository repoRepository;
     private final ContributorRepository contributorRepository;
     private final SearchableCommitRepository searchableCommitRepository;
-
-    @Autowired(required = false) // TimescaleDB är valfritt
-    private final TimescaleService timescaleService;
-
     private final StringRedisTemplate redisTemplate;
+
+    @Autowired(required = false)
+    private TimescaleService timescaleService;
 
     public void ingestAll() {
         log.info("Starting full ingestion cycle");
