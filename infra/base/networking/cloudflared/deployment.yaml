@@ -32,9 +32,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 64Mi
+              memory: 32Mi
             limits:
-              memory: 128Mi
+              cpu: 100m
+              memory: 64Mi
           volumeMounts:
             - name: config
               mountPath: /etc/cloudflared
