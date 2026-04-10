@@ -19,7 +19,7 @@ data:
 
       # Forge API
       - hostname: api.toddemanos.com
-        service: http://forge-api.todde.svc.cluster.local:8080
+        service: http://forge-api.todde.svc.cluster.local:80
 
       # Forge Frontend
       - hostname: toddemanos.com
