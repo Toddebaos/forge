@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -27,7 +28,10 @@ public class IngestionService {
     private final GitHubRepoRepository repoRepository;
     private final ContributorRepository contributorRepository;
     private final SearchableCommitRepository searchableCommitRepository;
+
+    @Autowired(required = false) // TimescaleDB är valfritt
     private final TimescaleService timescaleService;
+
     private final StringRedisTemplate redisTemplate;
 
     public void ingestAll() {
@@ -72,9 +76,8 @@ public class IngestionService {
         // API:et cachar repo-data — vi signalerar att cachen är stale
         redisTemplate.delete("repo:" + ghRepo.getFullName());
         redisTemplate.opsForValue().set(
-            "repo:last_synced:" + ghRepo.getFullName(),
-            Instant.now().toString()
-        );
+                "repo:last_synced:" + ghRepo.getFullName(),
+                Instant.now().toString());
 
         log.info("Repo {} ingested successfully", ghRepo.getFullName());
     }
@@ -82,15 +85,16 @@ public class IngestionService {
     private void ingestCommit(GHCommit ghCommit, String repoFullName) throws IOException {
         GHCommit.ShortInfo info = ghCommit.getCommitShortInfo();
 
-        // TimescaleDB — commit-metrik med tidsstämpel
-        CommitMetric metric = new CommitMetric();
-        metric.setTimestamp(info.getCommitDate().toInstant());
-        metric.setRepoFullName(repoFullName);
-        metric.setCommitCount(1);
-        metric.setAdditions(ghCommit.getLinesAdded());
-        metric.setDeletions(ghCommit.getLinesDeleted());
-        metric.setAuthor(info.getAuthor().getName());
-        timescaleService.save(metric);
+        if (timescaleService != null) {
+            CommitMetric metric = new CommitMetric();
+            metric.setTimestamp(info.getCommitDate().toInstant());
+            metric.setRepoFullName(repoFullName);
+            metric.setCommitCount(1);
+            metric.setAdditions(ghCommit.getLinesAdded());
+            metric.setDeletions(ghCommit.getLinesDeleted());
+            metric.setAuthor(info.getAuthor().getName());
+            timescaleService.save(metric);
+        }
 
         // Elasticsearch — indexera commit-meddelandet för sökning
         SearchableCommit searchable = new SearchableCommit();

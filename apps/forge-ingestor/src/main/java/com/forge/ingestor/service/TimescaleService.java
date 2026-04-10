@@ -3,12 +3,14 @@ package com.forge.ingestor.service;
 import com.forge.ingestor.model.timescale.CommitMetric;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "timescale.enabled", havingValue = "true")
 public class TimescaleService {
 
     // JdbcTemplate pekar på TimescaleDB-datasourcen via config

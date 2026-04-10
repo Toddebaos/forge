@@ -1,5 +1,6 @@
 package com.forge.ingestor.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
+@ConditionalOnProperty(name = "timescale.enabled", havingValue = "true")
 public class TimescaleConfig {
 
     @Value("${timescale.datasource.url}")
@@ -29,7 +31,6 @@ public class TimescaleConfig {
         return ds;
     }
 
-    // Named bean — matchar parametern i TimescaleService
     @Bean
     public JdbcTemplate timescaleJdbcTemplate(DataSource timescaleDataSource) {
         return new JdbcTemplate(timescaleDataSource);
