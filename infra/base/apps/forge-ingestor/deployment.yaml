@@ -13,7 +13,6 @@ spec:
       labels:
         app: forge-ingestor
     spec:
-      serviceAccountName: forge-ingestor
       containers:
         - name: forge-ingestor
           image: ghcr.io/toddebaos/forge-ingestor:latest
