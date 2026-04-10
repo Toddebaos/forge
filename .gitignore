@@ -8,3 +8,4 @@ infra/base/networking/ingress/cloudflare-secret.yaml
 infra/base/apps/forge-ingestor/secret.yaml
 infra/base/apps/forge-api/secret.yaml
 sealed-secrets-pub.pem
+apps\forge-api\.env
