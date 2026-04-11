@@ -4,13 +4,9 @@ metadata:
   name: forge-frontend
   namespace: todde
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - toddemanos.com
-      secretName: forge-frontend-tls
   rules:
     - host: toddemanos.com
       http:
