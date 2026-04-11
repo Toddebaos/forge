@@ -1,29 +1,13 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cloudflared-config
-  namespace: todde
 data:
   config.yaml: |
-    tunnel: bc12cc01-ac86-41fd-8df2-2d12ff734ef6  # tunnel-ID från Cloudflare dashboard
+    tunnel: bc12cc01-ac86-41fd-8df2-2d12ff734ef6
     credentials-file: /etc/cloudflared/credentials/credentials.json
 
     ingress:
-      # ArgoCD
-      - hostname: argocd.toddemanos.com
-        service: http://argocd-server.argocd.svc.cluster.local:80
-
-      # Grafana
-      - hostname: grafana.toddemanos.com
-        service: http://grafana.todde.svc.cluster.local:80
-
-      # Forge API
       - hostname: api.toddemanos.com
-        service: http://forge-api.todde.svc.cluster.local:80
-
-      # Forge Frontend
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
       - hostname: toddemanos.com
-        service: http://forge-frontend.todde.svc.cluster.local:3000
-
-      # Catch-all — måste finnas sist
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
+      - hostname: argocd.toddemanos.com
+        service: http://ingress-nginx-controller.ingress-nginx.svc.cluster.local:80
       - service: http_status:404
