@@ -1,7 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: todde
 data:
   config.yaml: |
     tunnel: bc12cc01-ac86-41fd-8df2-2d12ff734ef6
-    credentials-file: /etc/cloudflared/credentials/credentials.json
 
     ingress:
       - hostname: api.toddemanos.com
