@@ -1,9 +1,11 @@
 package com.forge.ingestor.service;
 
 import com.forge.ingestor.client.GitHubClient;
+import com.forge.ingestor.model.elasticsearch.SearchableCommit;
 import com.forge.ingestor.model.postgres.Contributor;
 import com.forge.ingestor.model.postgres.GitHubRepo;
 import com.forge.ingestor.model.timescale.CommitMetric;
+import com.forge.ingestor.repository.elasticsearch.SearchableCommitRepository;
 import com.forge.ingestor.repository.postgres.ContributorRepository;
 import com.forge.ingestor.repository.postgres.GitHubRepoRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,9 @@ public class IngestionService {
     @Autowired(required = false)
     private TimescaleService timescaleService;
 
+    @Autowired(required = false)
+    private SearchableCommitRepository searchableCommitRepository;
+
     public void ingestAll() {
         log.info("Starting full ingestion cycle");
         try {
@@ -46,11 +51,9 @@ public class IngestionService {
     private void ingestRepo(GHRepository ghRepo) throws IOException {
         log.info("Ingesting repo: {}", ghRepo.getFullName());
 
-        // 1. PostgreSQL — spara/uppdatera repo
         GitHubRepo repo = mapToRepo(ghRepo);
         repoRepository.save(repo);
 
-        // 2. PostgreSQL — spara contributors
         gitHubClient.fetchContributors(ghRepo).forEach(c -> {
             if (!contributorRepository.existsByLogin(c.getLogin())) {
                 Contributor contributor = new Contributor();
@@ -62,14 +65,11 @@ public class IngestionService {
             }
         });
 
-        // 3. Commits — fan-out till TimescaleDB + Elasticsearch
         List<GHCommit> commits = gitHubClient.fetchCommits(ghRepo);
         for (GHCommit ghCommit : commits) {
             ingestCommit(ghCommit, ghRepo.getFullName());
         }
 
-        // 4. Redis — invaliderera cache för detta repo
-        // API:et cachar repo-data — vi signalerar att cachen är stale
         redisTemplate.delete("repo:" + ghRepo.getFullName());
         redisTemplate.opsForValue().set(
                 "repo:last_synced:" + ghRepo.getFullName(),
@@ -92,6 +92,16 @@ public class IngestionService {
             timescaleService.save(metric);
         }
 
+        if (searchableCommitRepository != null) {
+            SearchableCommit searchable = new SearchableCommit();
+            searchable.setSha(ghCommit.getSHA1());
+            searchable.setMessage(info.getMessage());
+            searchable.setRepoFullName(repoFullName);
+            searchable.setAuthor(info.getAuthor().getName());
+            searchable.setCommittedAt(info.getCommitDate().toInstant());
+            searchable.setHtmlUrl(ghCommit.getHtmlUrl().toString());
+            searchableCommitRepository.save(searchable);
+        }
     }
 
     private GitHubRepo mapToRepo(GHRepository ghRepo) throws IOException {
