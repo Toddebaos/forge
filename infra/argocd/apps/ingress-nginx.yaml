@@ -22,6 +22,8 @@ spec:
           # ClusterIP räcker, cloudflared når NGINX internt
           service:
             type: ClusterIP
+          extraArgs:
+            watch-namespace: ""
 
           resources:
             requests:
