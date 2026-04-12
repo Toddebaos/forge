@@ -71,12 +71,14 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 60   # JVM behöver tid att starta
+            initialDelaySeconds: 120   # JVM behöver tid att starta
             periodSeconds: 30
+            failureThreshold: 5
           # Readiness — om denna failar tas podden bort från Service
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
             periodSeconds: 10
+            failureThreshold: 10
