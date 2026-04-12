@@ -27,6 +27,7 @@ public class GitHubClient {
         log.info("Fetching all repos for {}", username);
         return github.getUser(username)
                 .listRepositories()
+                .withPageSize(10)
                 .toList();
     }
 
@@ -34,7 +35,7 @@ public class GitHubClient {
     public List<GHCommit> fetchCommits(GHRepository repo) throws IOException {
         log.info("Fetching commits for {}", repo.getFullName());
         return repo.listCommits()
-                .withPageSize(100)
+                .withPageSize(10)
                 .toList();
     }
 
