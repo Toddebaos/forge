@@ -27,11 +27,13 @@ public class IngestionService {
     private final GitHubClient gitHubClient;
     private final GitHubRepoRepository repoRepository;
     private final ContributorRepository contributorRepository;
-    private final SearchableCommitRepository searchableCommitRepository;
     private final StringRedisTemplate redisTemplate;
 
     @Autowired(required = false)
     private TimescaleService timescaleService;
+
+    @Autowired(required = false)
+    private SearchableCommitRepository searchableCommitRepository;
 
     public void ingestAll() {
         log.info("Starting full ingestion cycle");
@@ -84,7 +86,7 @@ public class IngestionService {
     private void ingestCommit(GHCommit ghCommit, String repoFullName) throws IOException {
         GHCommit.ShortInfo info = ghCommit.getCommitShortInfo();
 
-        if (timescaleService != null) {
+        if (timescaleService != null && searchableCommitRepository != null) {
             CommitMetric metric = new CommitMetric();
             metric.setTimestamp(info.getCommitDate().toInstant());
             metric.setRepoFullName(repoFullName);
