@@ -62,10 +62,10 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 128Mi
+              memory: 384Mi
             limits:
               cpu: 300m
-              memory: 256Mi
+              memory: 768Mi
           # Liveness — om denna failar startas containern om
           livenessProbe:
             httpGet:
