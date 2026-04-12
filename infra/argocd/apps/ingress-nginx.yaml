@@ -14,23 +14,18 @@ spec:
     helm:
       valuesObject:
         controller:
-          # DaemonSet istället för Deployment — kör en pod per nod
-          # säkerställer att ingress alltid är tillgänglig oavsett nod
           kind: DaemonSet
-
-          # Vi använder Cloudflare Tunnel — ingen extern LoadBalancer behövs
-          # ClusterIP räcker, cloudflared når NGINX internt
           service:
-            type: ClusterIP
-
+            type: NodePort
+            nodePorts:
+              http: 30080
+              https: 30443
           resources:
             requests:
               cpu: 100m
               memory: 128Mi
             limits:
               memory: 256Mi
-
-          # Loggar real IP från Cloudflare istället för tunnel-IP
           config:
             use-forwarded-headers: "true"
             compute-full-forwarded-for: "true"
