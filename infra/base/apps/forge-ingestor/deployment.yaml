@@ -4,7 +4,7 @@ metadata:
   name: forge-ingestor
   namespace: todde
 spec:
-  replicas: 1       # alltid 1 — vi vill inte ha parallella ingestions
+  replicas: 1
   selector:
     matchLabels:
       app: forge-ingestor
@@ -20,6 +20,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx768m"
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -35,15 +37,6 @@ spec:
                 secretKeyRef:
                   name: forge-postgres-credentials
                   key: password
-            - name: TIMESCALE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: forge-postgres-credentials
-                  key: password
-            - name: TIMESCALE_USER
-              value: forge
-            - name: TIMESCALE_URL
-              value: jdbc:postgresql://forge-timescale-rw.todde.svc.cluster.local:5432/forge_metrics
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -65,18 +58,13 @@ spec:
               memory: 512Mi
             limits:
               memory: 2Gi
-          env:
-            - name: JAVA_OPTS
-              value: "-Xms256m -Xmx768m"
-          # Liveness — om denna failar startas containern om
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 120   # JVM behöver tid att starta
+            initialDelaySeconds: 120
             periodSeconds: 30
             failureThreshold: 5
-          # Readiness — om denna failar tas podden bort från Service
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
