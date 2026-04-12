@@ -10,9 +10,9 @@ data:
 
     ingress:
       - hostname: api.toddemanos.com
-        service: http://ingress-nginx-controller.todde.svc.cluster.local:80
+        service: http://10.43.177.64:80
       - hostname: toddemanos.com
-        service: http://ingress-nginx-controller.todde.svc.cluster.local:80
+        service: http://10.43.177.64:80
       - hostname: argocd.toddemanos.com
         service: http://ingress-nginx-controller.todde.svc.cluster.local:80
       - hostname: grafana.toddemanos.com
