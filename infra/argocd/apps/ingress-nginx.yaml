@@ -15,11 +15,13 @@ spec:
       valuesObject:
         controller:
           kind: DaemonSet
+          hostPort:
+            enabled: true
+            ports:
+              http: 80
+              https: 443
           service:
-            type: NodePort
-            nodePorts:
-              http: 30080
-              https: 30443
+            type: ClusterIP
           resources:
             requests:
               cpu: 100m
