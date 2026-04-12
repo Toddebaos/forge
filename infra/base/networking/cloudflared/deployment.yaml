@@ -24,10 +24,9 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 32Mi
-            limits:
-              cpu: 100m
               memory: 64Mi
+            limits:
+              memory: 128Mi
           volumeMounts:
             - name: config
               mountPath: /etc/cloudflared/config
@@ -41,4 +40,4 @@ spec:
             name: cloudflared-config
         - name: credentials
           secret:
-            secretName: cloudflared-tunnel-credentials
+            secretName: cloudflared-credentials
