@@ -1,11 +1,9 @@
 package com.forge.ingestor.service;
 
 import com.forge.ingestor.client.GitHubClient;
-import com.forge.ingestor.model.elasticsearch.SearchableCommit;
 import com.forge.ingestor.model.postgres.Contributor;
 import com.forge.ingestor.model.postgres.GitHubRepo;
 import com.forge.ingestor.model.timescale.CommitMetric;
-import com.forge.ingestor.repository.elasticsearch.SearchableCommitRepository;
 import com.forge.ingestor.repository.postgres.ContributorRepository;
 import com.forge.ingestor.repository.postgres.GitHubRepoRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +29,6 @@ public class IngestionService {
 
     @Autowired(required = false)
     private TimescaleService timescaleService;
-
-    @Autowired(required = false)
-    private SearchableCommitRepository searchableCommitRepository;
 
     public void ingestAll() {
         log.info("Starting full ingestion cycle");
@@ -86,7 +81,7 @@ public class IngestionService {
     private void ingestCommit(GHCommit ghCommit, String repoFullName) throws IOException {
         GHCommit.ShortInfo info = ghCommit.getCommitShortInfo();
 
-        if (timescaleService != null && searchableCommitRepository != null) {
+        if (timescaleService != null) {
             CommitMetric metric = new CommitMetric();
             metric.setTimestamp(info.getCommitDate().toInstant());
             metric.setRepoFullName(repoFullName);
@@ -97,15 +92,6 @@ public class IngestionService {
             timescaleService.save(metric);
         }
 
-        // Elasticsearch — indexera commit-meddelandet för sökning
-        SearchableCommit searchable = new SearchableCommit();
-        searchable.setSha(ghCommit.getSHA1());
-        searchable.setMessage(info.getMessage());
-        searchable.setRepoFullName(repoFullName);
-        searchable.setAuthor(info.getAuthor().getName());
-        searchable.setCommittedAt(info.getCommitDate().toInstant());
-        searchable.setHtmlUrl(ghCommit.getHtmlUrl().toString());
-        searchableCommitRepository.save(searchable);
     }
 
     private GitHubRepo mapToRepo(GHRepository ghRepo) throws IOException {
