@@ -10,9 +10,12 @@ spec:
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: prometheus-mongodb-exporter
-    targetRevision: 3.0.0
+    targetRevision: 3.6.0
     helm:
       valuesObject:
+        image:
+          repository: bitnami/mongodb-exporter
+          tag: latest
         mongodb:
           uri: mongodb://forge-mongodb.todde.svc.cluster.local:27017/admin?directConnection=true
         resources:

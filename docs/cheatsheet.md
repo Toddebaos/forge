@@ -48,7 +48,7 @@ argocd app sync namn
 ```
 4. Verifiera:
 ```bash
-kubectl get pods -n monitoring   # eller todde/argocd etc.
+kubectl get pods -n    # eller todde/argocd etc.
 ```
 
 ---
