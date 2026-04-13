@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-databases
+  namespace: todde
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - forge-postgres
+          - forge-redis
+          - forge-elasticsearch
+          - forge-mongodb
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: forge-api
+    - from:
+        - podSelector:
+            matchLabels:
+              app: forge-ingestor

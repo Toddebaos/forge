@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-forge-api
+  namespace: todde
+spec:
+  podSelector:
+    matchLabels:
+      app: forge-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: forge-postgres
+    - to:
+        - podSelector:
+            matchLabels:
+              app: forge-redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app: forge-elasticsearch
+    - to:
+        - podSelector:
+            matchLabels:
+              app: forge-mongodb
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
