@@ -15,8 +15,4 @@ data:
         service: http://10.43.177.64:80
       - hostname: argocd.toddemanos.com
         service: http://10.43.177.64:80
-      - hostname: grafana.toddemanos.com
-        service: http://10.43.177.64:80
-        originRequest:
-          disableChunkedEncoding: true
       - service: http_status:404
