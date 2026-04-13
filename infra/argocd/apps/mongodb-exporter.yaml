@@ -14,7 +14,7 @@ spec:
     helm:
       valuesObject:
         mongodb:
-          uri: mongodb://forge-mongodb.todde.svc.cluster.local:27017/admin
+          uri: mongodb://forge-mongodb.todde.svc.cluster.local:27017/admin?directConnection=true
         resources:
           requests:
             cpu: 10m
