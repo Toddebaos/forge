@@ -14,7 +14,7 @@ spec:
     helm:
       valuesObject:
         mongodb:
-          uri: mongodb://root:forge-mongo-secret-2026@forge-mongodb.todde.svc.cluster.local:27017/admin
+          uri: mongodb://root:forge-mongo-secret-2026@forge-mongodb.todde.svc.cluster.local:27017/admin?authSource=admin
         resources:
           requests:
             cpu: 10m
