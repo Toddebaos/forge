@@ -20,6 +20,8 @@ public class CommitMetric {
     private Long commitCount;
     private Long deletions;
     private String repoFullName;
-    private Instant timeStamp;
+
+    @Column(name = "timestamp")
+    private Instant timestamp;
     
 }
