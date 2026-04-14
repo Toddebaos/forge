@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import java.sql.Timestamp;
 
 @Slf4j
 @Service
@@ -25,7 +26,7 @@ public class TimescaleService {
             VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT DO NOTHING
             """,
-            metric.getTimestamp(),
+            Timestamp.from(metric.getTimestamp()),
             metric.getRepoFullName(),
             metric.getCommitCount(),
             metric.getAdditions(),
