@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: forge-api
-          image: ghcr.io/toddebaos/forge-api:latest
+          image: ghcr.io/toddebaos/forge-api:137d31041db039df06a3b3b3ebf38aeea5b7c426
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
