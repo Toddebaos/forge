@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: forge-ingestor
-          image: ghcr.io/toddebaos/forge-ingestor:latest
+          image: ghcr.io/toddebaos/forge-ingestor:bf11deab00b5d003c01981f1477d040c75e4fdcb
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
