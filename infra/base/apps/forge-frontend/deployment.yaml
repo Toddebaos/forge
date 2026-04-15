@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: forge-frontend
-          image: ghcr.io/toddebaos/forge-frontend:latest
+          image: ghcr.io/toddebaos/forge-frontend:ded2a86a1b4d6f93572c4da2d99dda4539c48811
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
