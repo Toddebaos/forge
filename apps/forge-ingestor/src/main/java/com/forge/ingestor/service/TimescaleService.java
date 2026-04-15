@@ -23,7 +23,7 @@ public class TimescaleService {
         timescaleJdbcTemplate.update("""
             INSERT INTO commit_metrics
                 (timestamp, repo_full_name, commit_count, additions, deletions, author, commit_sha)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (repo_full_name, commit_sha) DO NOTHING
             """,
             Timestamp.from(metric.getTimestamp()),
