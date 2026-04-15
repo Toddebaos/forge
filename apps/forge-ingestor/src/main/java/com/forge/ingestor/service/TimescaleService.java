@@ -22,16 +22,17 @@ public class TimescaleService {
         // samma commit ska inte dupliceras om ingestor kör igen
         timescaleJdbcTemplate.update("""
             INSERT INTO commit_metrics
-                (timestamp, repo_full_name, commit_count, additions, deletions, author)
+                (timestamp, repo_full_name, commit_count, additions, deletions, author, commit_sha)
             VALUES (?, ?, ?, ?, ?, ?)
-            ON CONFLICT DO NOTHING
+            ON CONFLICT (repo_full_name, commit_sha) DO NOTHING
             """,
             Timestamp.from(metric.getTimestamp()),
             metric.getRepoFullName(),
             metric.getCommitCount(),
             metric.getAdditions(),
             metric.getDeletions(),
-            metric.getAuthor()
+            metric.getAuthor(),
+            metric.getCommitSha()
         );
     }
 }

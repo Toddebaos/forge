@@ -89,6 +89,7 @@ public class IngestionService {
             metric.setAdditions(ghCommit.getLinesAdded());
             metric.setDeletions(ghCommit.getLinesDeleted());
             metric.setAuthor(info.getAuthor().getName());
+            metric.setCommitSha(ghCommit.getSHA1());
             timescaleService.save(metric);
         }
 

@@ -23,5 +23,7 @@ public class CommitMetric {
 
     @Column(name = "timestamp")
     private Instant timestamp;
+
+    private String commitSha;
     
 }

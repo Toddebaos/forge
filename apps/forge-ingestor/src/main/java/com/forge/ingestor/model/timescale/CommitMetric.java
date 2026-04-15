@@ -32,4 +32,7 @@ public class CommitMetric {
     private int deletions;          // antal borttagna rader kod
 
     private String author;          // GitHub-login för commit-författaren
+
+    @Column(name = "commit_sha" , length = 40)
+    private String commitSha;
 }

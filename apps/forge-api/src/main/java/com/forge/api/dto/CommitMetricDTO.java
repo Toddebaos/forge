@@ -14,5 +14,6 @@ public class CommitMetricDTO {
     private Long deletions;
     private String repoFullName;
     private Instant timeStamp;
+    private String commitSha;
 
 }
