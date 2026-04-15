@@ -54,7 +54,7 @@ jobs:
 
       - name: Uppdatera image-tag i deployment
         run: |
-          sed -i "s|ghcr.io/toddebaos/forge-api:.*|ghcr.io/toddebaos/forge-api:${{ github.sha }}|" \
+          sed -i "s|ghcr.io/toddebaos/forge-ingestor:.*|ghcr.io/toddebaos/forge-ingestor:${{ github.sha }}|" \
           infra/base/apps/forge-ingestor/deployment.yaml
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
